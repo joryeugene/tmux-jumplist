@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 DATA_DIR="$(tmux show-environment -g TMUX_JUMPLIST_DATA 2>/dev/null | cut -d= -f2-)"
 HISTORY_FILE="$DATA_DIR/history"
@@ -101,11 +100,12 @@ cmd_record() {
 cmd_back() {
     [ -f "$HISTORY_FILE" ] || return 0
 
-    local cursor total
+    local cursor total current
     cursor="$(get_cursor)"
     total="$(line_count)"
     [ "$total" -eq 0 ] && return 0
 
+    current="$(tmux display-message -p '#{session_name}:#{window_index}.#{pane_index}')"
     local try_cursor=$(( cursor + 1 ))
 
     while [ "$try_cursor" -lt "$total" ]; do
@@ -114,6 +114,11 @@ cmd_back() {
 
         local target
         target="$(get_line "$line_num")"
+
+        if [ "$target" = "$current" ]; then
+            try_cursor=$(( try_cursor + 1 ))
+            continue
+        fi
 
         if target_exists "$target"; then
             tmux set-option -gq @jumplist-navigating 1
@@ -131,12 +136,13 @@ cmd_back() {
 cmd_forward() {
     [ -f "$HISTORY_FILE" ] || return 0
 
-    local cursor total
+    local cursor total current
     cursor="$(get_cursor)"
     total="$(line_count)"
 
     [ "$cursor" -eq 0 ] && return 0
 
+    current="$(tmux display-message -p '#{session_name}:#{window_index}.#{pane_index}')"
     local try_cursor=$(( cursor - 1 ))
 
     while [ "$try_cursor" -ge 0 ]; do
@@ -146,6 +152,11 @@ cmd_forward() {
 
         local target
         target="$(get_line "$line_num")"
+
+        if [ "$target" = "$current" ]; then
+            try_cursor=$(( try_cursor - 1 ))
+            continue
+        fi
 
         if target_exists "$target"; then
             tmux set-option -gq @jumplist-navigating 1
@@ -163,5 +174,5 @@ case "${1:-}" in
     record)  cmd_record "${2:-}" ;;
     back)    cmd_back ;;
     forward) cmd_forward ;;
-    *)       echo "Usage: jumplist.sh {record|back|forward}" >&2; exit 1 ;;
+    *)       exit 1 ;;
 esac

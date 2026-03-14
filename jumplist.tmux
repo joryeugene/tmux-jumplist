@@ -30,7 +30,7 @@ main() {
 
     # Record pane focus changes (format strings resolve before the script runs)
     tmux set-hook -ga pane-focus-in \
-        "run-shell -b \"$script record '#{session_name}:#{window_index}.#{pane_index}'\""
+        "run-shell \"$script record '#{session_name}:#{window_index}.#{pane_index}'\""
 
     # Navigation keybindings (no prefix)
     tmux bind-key -n "$key_back" run-shell "$script back"
