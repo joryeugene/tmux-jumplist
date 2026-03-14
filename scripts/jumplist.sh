@@ -43,7 +43,7 @@ switch_to() {
 
 write_history() {
     if [ "${#ENTRIES[@]}" -eq 0 ]; then
-        > "$HISTORY_FILE"
+        true > "$HISTORY_FILE"
     else
         printf '%s\n' "${ENTRIES[@]}" > "$HISTORY_FILE"
     fi

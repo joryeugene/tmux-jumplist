@@ -1,5 +1,9 @@
 # tmux-jumplist
 
+[![shellcheck](https://github.com/joryeugene/tmux-jumplist/actions/workflows/lint.yml/badge.svg)](https://github.com/joryeugene/tmux-jumplist/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![tmux](https://img.shields.io/badge/tmux-3.0+-1BB91F.svg)](https://github.com/tmux/tmux)
+
 ```
   ╭──────────────────────────────────╮
   │  ←  Alt+[   jumplist   Alt+] →   │
@@ -12,7 +16,7 @@
 
 Navigate back and forward through your tmux pane history. Like `Ctrl-O`/`Ctrl-I` in Vim, but for tmux.
 
-tmux remembers your last window (`prefix + l`). That's one step. tmux-jumplist remembers **50**.
+tmux remembers your last window with `prefix + l`, but that only goes one step back. tmux-jumplist remembers **50**.
 
 ## How it works
 
@@ -35,10 +39,10 @@ At B, you switch to a NEW window F:
   BEFORE:   [A] [B] [C] [D] [E]
   AFTER:    [A] [B] [F]
 
-  C, D, E are gone. You chose a new path.
+  C, D, E are gone because you chose a new path.
 ```
 
-No daemon. No background process. A single shell script (~150 lines) triggered by tmux hooks.
+There is no daemon and no background process. A single shell script (~180 lines) runs on each pane focus change via tmux hooks.
 
 ## Install
 
@@ -82,11 +86,11 @@ set -g @jumplist-key-forward 'M-.'
 
 ## What gets tracked
 
-Every pane focus change is recorded as `session:window.pane`. Consecutive duplicates are collapsed (switching to the same pane twice records only once). Closed panes and windows are skipped automatically during navigation.
+Every pane focus change is recorded as `session:window.pane`. Consecutive duplicates are collapsed (switching to the same pane twice records only once). Closed panes and windows are skipped automatically during navigation. Popup windows (lazygit, yazi, etc.) are handled gracefully without polluting the history.
 
 ## Prior art
 
-[tmux/tmux#3258](https://github.com/tmux/tmux/issues/3258) requested this feature in 2022. tmux's built-in `last-window` and `last-pane` only toggle between two locations. This plugin fills that gap.
+[tmux/tmux#3258](https://github.com/tmux/tmux/issues/3258) requested this feature in 2022. The built-in `last-window` and `last-pane` commands only toggle between two locations, so this plugin provides the full navigation history that was missing.
 
 ## License
 
