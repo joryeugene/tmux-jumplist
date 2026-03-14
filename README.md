@@ -2,7 +2,7 @@
 
 ```
   ╭──────────────────────────────────╮
-  │  ←  Alt+,   jumplist   Alt+. →   │
+  │  ←  Alt+[   jumplist   Alt+] →   │
   │                                  │
   │    [A] [B] [C] [D] [E]           │
   │             ^                    │
@@ -61,23 +61,23 @@ Press `prefix + I` to install.
 
 | Key | Action |
 |-----|--------|
-| `Alt+,` | Jump back |
-| `Alt+.` | Jump forward |
+| `Alt+[` | Jump back |
+| `Alt+]` | Jump forward |
 
 ### Alternative keybindings
 
 ```bash
-# Use brackets instead
-set -g @jumplist-key-back 'M-['
-set -g @jumplist-key-forward 'M-]'
+# Use comma/period instead
+set -g @jumplist-key-back 'M-,'
+set -g @jumplist-key-forward 'M-.'
 ```
 
 ## Configuration
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `@jumplist-key-back` | `M-,` | Key to navigate backward |
-| `@jumplist-key-forward` | `M-.` | Key to navigate forward |
+| `@jumplist-key-back` | `M-[` | Key to navigate backward |
+| `@jumplist-key-forward` | `M-]` | Key to navigate forward |
 | `@jumplist-max-history` | `50` | Maximum entries in the jumplist |
 
 ## What gets tracked

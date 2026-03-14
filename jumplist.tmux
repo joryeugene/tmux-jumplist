@@ -13,8 +13,8 @@ main() {
     local script="$CURRENT_DIR/scripts/jumplist.sh"
 
     local key_back key_forward max_history
-    key_back="$(get_tmux_option '@jumplist-key-back' 'M-,')"
-    key_forward="$(get_tmux_option '@jumplist-key-forward' 'M-.')"
+    key_back="$(get_tmux_option '@jumplist-key-back' 'M-[')"
+    key_forward="$(get_tmux_option '@jumplist-key-forward' 'M-]')"
     max_history="$(get_tmux_option '@jumplist-max-history' '50')"
 
     local data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/tmux/jumplist"
