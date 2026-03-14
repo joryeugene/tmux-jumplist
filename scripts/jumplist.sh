@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 DATA_DIR="$(tmux show-environment -g TMUX_JUMPLIST_DATA 2>/dev/null | cut -d= -f2-)"
+DATA_DIR="${DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/tmux/jumplist}"
 HISTORY_FILE="$DATA_DIR/history"
 MAX="$(tmux show-environment -g TMUX_JUMPLIST_MAX 2>/dev/null | cut -d= -f2- || echo 50)"
 
@@ -62,20 +63,27 @@ cmd_record() {
     cursor="$(get_cursor)"
     total="${#ENTRIES[@]}"
 
-    # If cursor > 0, truncate forward history
+    # Dedup: check against current position in history.
+    # Must run BEFORE truncation to prevent popup/refocus from destroying
+    # forward history when the same pane regains focus.
+    if [ "$total" -gt 0 ]; then
+        local check_idx
+        if [ "$cursor" -gt 0 ]; then
+            check_idx=$(( total - cursor ))
+        else
+            check_idx="$total"
+        fi
+        if [ "$check_idx" -gt 0 ] && [ "${ENTRIES[check_idx-1]}" = "$location" ]; then
+            return 0
+        fi
+    fi
+
+    # If cursor > 0, truncate forward history (new path chosen)
     if [ "$cursor" -gt 0 ] && [ "$total" -gt 0 ]; then
         local keep=$(( total - cursor ))
         if [ "$keep" -gt 0 ]; then
             ENTRIES=("${ENTRIES[@]:0:$keep}")
             total="$keep"
-        fi
-    fi
-
-    # Dedup: skip if same as current head
-    if [ "$total" -gt 0 ]; then
-        if [ "${ENTRIES[total-1]}" = "$location" ]; then
-            set_cursor 0
-            return 0
         fi
     fi
 

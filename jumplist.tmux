@@ -29,6 +29,8 @@ main() {
     tmux set-option -gq @jumplist-navigating 0
 
     # Record pane focus changes (format strings resolve before the script runs)
+    # Clear first to prevent duplicate hooks on plugin reload
+    tmux set-hook -gu pane-focus-in 2>/dev/null
     tmux set-hook -ga pane-focus-in \
         "run-shell \"$script record '#{session_name}:#{window_index}.#{pane_index}'\""
 
